@@ -46,9 +46,9 @@ merge_cv32e40s_into_cv32e40x-dv () {
   cd cv32e40x
 
   echo "=== Make a branch in cv32e40x-dv that contain core-v-verif's cv32e40s folder from the cv32e40s/dev branch ==="
-  git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
-  git fetch ohw_cvv
-  git checkout -b cvv_$date_time ohw_cvv/cv32e40s/dev
+  git remote add kd_ohw_cvv git@github.com:silabs-krdosvik/core-v-verif.git
+  git fetch kd_ohw_cvv
+  git checkout -b cvv_$date_time kd_ohw_cvv/cv32e40s/dev
   git subtree split --prefix cv32e40s -b cv32e40s_$date_time
 
   echo "=== Make a branch based on the latest cv32e40x-dv content ==="
@@ -89,14 +89,14 @@ merge_sdev_into_xdev () {
   echo $'\n======= Merge of core-v-verif cv32e40s/dev into cv32e40x/dev =======\n'
 
   echo "=== Download open hardware fork ==="
-  git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
-  git fetch ohw_cvv
+  git remote add kd_ohw_cvv git@github.com:silabs-krdosvik/core-v-verif.git
+  git fetch kd_ohw_cvv
 
   echo "=== Make a core-v-verif/cv32e40s/dev branch ==="
-  git checkout -b cvv_sdev_$date_time ohw_cvv/cv32e40s/dev
+  git checkout -b cvv_sdev_$date_time kd_ohw_cvv/cv32e40s/dev
 
   echo "=== Make a core-v-verif/cv32e40x/dev branch ==="
-  git checkout -b cvv_xdev_$date_time ohw_cvv/cv32e40x/dev
+  git checkout -b cvv_xdev_$date_time kd_ohw_cvv/cv32e40x/dev
 
   echo "=== Merge ==="
   git merge --no-commit --no-ff cvv_sdev_$date_time
@@ -109,14 +109,14 @@ merge_xdev_into_sdev () {
   echo $'\n======= Merge of core-v-verif cv32e40x/dev into cv32e40s/dev =======\n'
 
   echo "=== Download open hardware fork ==="
-  git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
-  git fetch ohw_cvv
+  git remote add kd_ohw_cvv git@github.com:silabs-krdosvik/core-v-verif.git
+  git fetch kd_ohw_cvv
 
   echo "=== Make a core-v-verif/cv32e40s/dev branch ==="
-  git checkout -b cvv_xdev_$date_time ohw_cvv/cv32e40x/dev
+  git checkout -b cvv_xdev_$date_time kd_ohw_cvv/cv32e40x/dev
 
   echo "=== Make a core-v-verif/cv32e40s/dev branch ==="
-  git checkout -b cvv_sdev_$date_time ohw_cvv/cv32e40s/dev
+  git checkout -b cvv_sdev_$date_time kd_ohw_cvv/cv32e40s/dev
 
   echo "=== Merge ==="
   git merge --no-commit --no-ff cvv_xdev_$date_time
