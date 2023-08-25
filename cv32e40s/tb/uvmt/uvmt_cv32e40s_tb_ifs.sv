@@ -270,7 +270,8 @@ interface uvmt_cv32e40s_support_logic_module_i_if_t
 
    input logic clk,
    input logic rst_n,
-
+// file change in 40s sendt to 40x
+// 40S // 40S // 40S // 40S
    //Decoder:
    input logic [31:0] if_instr,
    input logic [31:0] id_instr,

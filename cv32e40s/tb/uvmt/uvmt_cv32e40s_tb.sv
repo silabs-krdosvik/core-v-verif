@@ -1129,7 +1129,7 @@ module uvmt_cv32e40s_tb;
       .integrity_enabled (core_i.xsecure_ctrl.cpuctrl.integrity),
       .nmip (core_i.cs_registers_i.dcsr_rdata.nmip),
       .mcause_exception_code (core_i.cs_registers_i.mcause_rdata.exception_code),
-
+// file change in 40s sendt to 40x
       //OBI data:
       .obi_data_req_packet (core_i.m_c_obi_data_if.req_payload),
       .obi_data_resp_packet (core_i.m_c_obi_data_if.resp_payload),
