@@ -61,7 +61,7 @@ class uvma_pma_cfg_c#(int ILEN=DEFAULT_ILEN,
    constraint defaults_cons {
       soft enabled            == 1;
       soft cov_model_enabled  == 0;
-      soft scoreboard_enabled == 1;
+      soft scoreboard_enabled == 0;
       soft trn_log_enabled    == 1;
    }
 
