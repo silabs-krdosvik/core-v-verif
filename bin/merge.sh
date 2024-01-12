@@ -28,9 +28,8 @@ date_time=$(date +%Y.%m.%d-%H.%M)
 
 usage() {
 
-  echo "usage: $0 --[s_into_x-dv|x-dv_into_s|sdev_into_xdev|xdev_into_sdev]"
+  echo "usage: $0 --[s_into_x-dv|sdev_into_xdev|xdev_into_sdev]"
   echo "--s_into_x-dv     Do a merge of core-v-verif cv32e40s/dev cv32e40s directory into cv32e40x-dv main (make sure the clonetb script has run)"
-  echo "--x-dv_into_s     Do a merge of cv32e40x-dv main into core-v-verif cv32e40s/dev cv32e40s (not yet developed)"
   echo "--sdev_into_xdev  Do a merge of core-v-verif cv32e40s/dev into core-v-verif cv32e40x/dev"
   echo "--xdev_into_sdev  Do a merge of core-v-verif cv32e40x/dev into core-v-verif cv32e40s/dev"
   echo "--rejection-diff  Merge s/dev to x-dv, using 'theirs'"
@@ -86,19 +85,23 @@ move_files_40s_into_40x () {
 }
 
 
-substitute_file_content_40s_into_40x () {
+substitute_file_content_40s_into_40x () { #TODO: trenger test for riktighet
 
   echo "=== Exchange 40x/X with 40s/S in file content ==="
 
-  read -p "Exchange 40x/X with 40s/S in file content? y/n " yn
+  read -p "Do you wish to exchange 40x/X with 40s/S in file content?\n"
+  "This is not recommended as most \"correct\" substitutions has already been done in perviouse merges.\n"
+  "(y, default: n)?" yn
   case $yn in
     [Yy]* ) ;;
-    * ) echo "Skip content substitution"; return;;
+    * )
+    echo "=== Exchange 40x/X with 40s/S in file content ===";
+    find . -type f -exec grep -Il . {} + | egrep -iv '\/\.|40sx|40xs' | xargs -n1 sed -i 's/40s/40x/g'
+    find . -type f -exec grep -Il . {} + | egrep -iv '\/\.|40sx|40xs' | xargs -n1 sed -i 's/40S/40X/g'
+    return;;
   esac
 
-  find . -type f -exec grep -Il . {} + | egrep -iv '\/\.|40sx|40xs' | xargs -n1 sed -i 's/40s/40x/g'
-  find . -type f -exec grep -Il . {} + | egrep -iv '\/\.|40sx|40xs' | xargs -n1 sed -i 's/40S/40X/g'
-
+  echo "Skip content substitution";
 }
 
 
@@ -179,23 +182,54 @@ rejection_diff() {
   git merge -X theirs $branch_name_40s_subtree
 
   move_files_40s_into_40x
-  substitute_file_content_40s_into_40x
+  substitute_file_content_40s_into_40x #TODO: er dette smart?
 
 }
 
+branch_is_up_to_date_notification(){
+  echo "=== Notify that there might not be anything to merge ==="
+  case $1 in
+    "--s_into_x-dv")
+    commit 1, på 100?
+    commit 2, på 100?
+    3 commiter på rad som er i 100 mergen.
+    commit X, på 100? jepp. Print commits som må merges.
+    commit X, på 100? jepp. Print commits som må merges.
+    commit X, på 100? jepp. Print commits som må merges.
+
+    fetch commit sha from cv32e40s:
+    lagre strengen: whole_message = git show -s --format=%s%b <dbe808ff780e529df3c694e28a<808c24a96d010d>
+      sjekk etter signed-off-by:
+      hvis ja, kun vurder det foran signed-off-by.
+        if grep -q "$SUB" <<< "$STR"; then signed_off_message = ... echo $whole_message | cut -d'Signed-off by:' -f1
+        fi
+      hvis nei, gå videre: return ??
+
+    gå inn i cv32e40x repoet
+    søk i loggen etter commit meldingen: git log -100 --grep="iss misa check disable code"
+
+      ;;
+    "--sdev_into_xdev")
+      ;;
+    "--xdev_into_sdev")
+      ;;
+    *)
+      usage
+      ;;
+  esac
+
+}
 
 main() {
 
   case $1 in
     "--s_into_x-dv")
       clone_x_dv
-      merge_cv32e40s_into_cv32e40x-dv
+      abort_if_merge_is_up_to_date
+      merge_cv32e40s_into_cv32e40x-dv #run both denne kommandoen og rejection diff i samme run.
       move_files_40s_into_40x
       substitute_file_content_40s_into_40x
       check_merge_status
-      ;;
-    "--x-dv_into_s")
-      echo "This merge method is not yet developed"
       ;;
     "--sdev_into_xdev")
       merge_sdev_into_xdev
