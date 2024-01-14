@@ -179,7 +179,7 @@ rejection_diff() {
 }
 
 need_40s_40x-dv_merge(){
-  echo "=== Check if there are new commits i cv32e40s to merge to cv32e40x-dv ==="
+  echo -e "\n=== Check if there are new commits i cv32e40s to merge to cv32e40x-dv ==="
 
   missing_commits=()
   nr_commits=10
@@ -187,10 +187,8 @@ need_40s_40x-dv_merge(){
 
   # Get commit shas from cv32e40s:
   cv32e40s_commits_shas=$(git log --pretty=format:'%H' -$nr_commits -- cv32e40s)
-  echo $cv32e40s_commits_shas
   for sha in $cv32e40s_commits_shas; do
     commit_message=$(git show -s --format=%s%b $sha)
-    echo $commit_message
 
     # If the commit is signed off search for the commit's -m message in cv32e40x-dv
     # to check if the commit is merged or not.
@@ -232,13 +230,13 @@ need_40s_40x-dv_merge(){
 
 get_branch_cv32e40s_dev() {
 
+  echo -e "\n== Enter updated cv32e40s/dev branch =="
+
   {
   git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
-  } 2> /dev/null
-
-  echo "== Fetch ohw_cvv (git@github.com:openhwgroup/core-v-verif.git) =="
   git fetch ohw_cvv
   git checkout ohw_cvv/cv32e40s/dev
+  } 2> /dev/null
 
 }
 
