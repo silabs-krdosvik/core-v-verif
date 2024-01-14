@@ -88,19 +88,22 @@ substitute_file_content_40s_into_40x () {
 
   echo "=== Exchange 40x/X with 40s/S in file content ==="
 
-  read -p "Do you wish to exchange 40x/X with 40s/S in file content?\n"
-  "This is not recommended as most \"correct\" substitutions has already been done in perviouse merges.\n"
-  "(y, default: n)?" yn
+  echo "Do you wish to exchange 40x/X with 40s/S in file content?\n"
+  echo "This is not recommended as most \"correct\" substitutions has already been done in perviouse merges.\n"
+  read -p "(y, default: n)?" yn
   case $yn in
-    [Yy]* ) ;;
-    * )
-    echo "=== Exchange 40x/X with 40s/S in file content ===";
-    find . -type f -exec grep -Il . {} + | egrep -iv '\/\.|40sx|40xs' | xargs -n1 sed -i 's/40s/40x/g'
-    find . -type f -exec grep -Il . {} + | egrep -iv '\/\.|40sx|40xs' | xargs -n1 sed -i 's/40S/40X/g'
-    return;;
+    [Yy])
+      echo "=== Exchange 40x/X with 40s/S in file content ===";
+      find . -type f -exec grep -Il . {} + | egrep -iv '\/\.|40sx|40xs' | xargs -n1 sed -i 's/40s/40x/g'
+      find . -type f -exec grep -Il . {} + | egrep -iv '\/\.|40sx|40xs' | xargs -n1 sed -i 's/40S/40X/g'
+      return
+      ;;
+
+    *)
+      echo "Skip content substitution";
+      ;;
   esac
 
-  echo "Skip content substitution";
 }
 
 
@@ -265,9 +268,7 @@ main() {
       move_files_40s_into_40x
       continue_or_exit
       substitute_file_content_40s_into_40x
-      continue_or_exit
       check_merge_status
-      continue_or_exit
       ;;
     "--sdev_into_xdev")
       update_remote
