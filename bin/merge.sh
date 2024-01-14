@@ -57,10 +57,14 @@ merge_cv32e40s_into_cv32e40x-dv () {
   cd cv32e40x
 
   echo "=== Make a branch in cv32e40x-dv that contain core-v-verif's cv32e40s folder from the cv32e40s/dev branch ==="
+  git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
+  git fetch ohw_cvv
   git checkout -b cvv_$date_time ohw_cvv/cv32e40s/dev
   git subtree split --prefix cv32e40s -b cv32e40s_$date_time
 
   echo "=== Make a branch based on the latest cv32e40x-dv content ==="
+  git remote add ohw_x-dv git@github.com:openhwgroup/cv32e40x-dv.git
+  git fetch ohw_x-dv
   git checkout -b merge_cv32e40s_$date_time ohw_x-dv/main
 
   echo "=== Merge ==="
@@ -226,23 +230,49 @@ need_40s_40x-dv_merge(){
 
 }
 
-update_remote() {
+get_branch_cv32e40s_dev() {
+
+  {
   git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
+  } 2> /dev/null
+
+  echo "== Fetch ohw_cvv (git@github.com:openhwgroup/core-v-verif.git) =="
   git fetch ohw_cvv
-  git remote add ohw_x-dv git@github.com:openhwgroup/cv32e40x-dv.git
-  git fetch ohw_x-dv
+  git checkout ohw_cvv/cv32e40s/dev
+
+}
+
+continue_or_exit() {
+  read -p "Continue merge process? (default: y, n)? " yn
+  case $yn in
+    [Nn])
+      echo "Exit merge!"
+      exit 1
+      ;;
+    *)
+      echo "Continue merge process!"
+      return
+      ;;
+  esac
+
 }
 
 main() {
   case $1 in
     "--s_into_x-dv")
       #clone_x_dv
-      update_remote
+      get_branch_cv32e40s_dev
+      continue_or_exit
       need_40s_40x-dv_merge
+      continue_or_exit
       merge_cv32e40s_into_cv32e40x-dv
+      continue_or_exit
       move_files_40s_into_40x
+      continue_or_exit
       substitute_file_content_40s_into_40x
+      continue_or_exit
       check_merge_status
+      continue_or_exit
       ;;
     "--sdev_into_xdev")
       update_remote
