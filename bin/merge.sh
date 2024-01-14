@@ -57,14 +57,10 @@ merge_cv32e40s_into_cv32e40x-dv () {
   cd cv32e40x
 
   echo "=== Make a branch in cv32e40x-dv that contain core-v-verif's cv32e40s folder from the cv32e40s/dev branch ==="
-  git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
-  git fetch ohw_cvv
   git checkout -b cvv_$date_time ohw_cvv/cv32e40s/dev
   git subtree split --prefix cv32e40s -b cv32e40s_$date_time
 
   echo "=== Make a branch based on the latest cv32e40x-dv content ==="
-  git remote add ohw_x-dv git@github.com:openhwgroup/cv32e40x-dv.git
-  git fetch ohw_x-dv
   git checkout -b merge_cv32e40s_$date_time ohw_x-dv/main
 
   echo "=== Merge ==="
@@ -109,10 +105,6 @@ merge_sdev_into_xdev () {
 
   echo $'\n======= Merge of core-v-verif cv32e40s/dev into cv32e40x/dev =======\n'
 
-  echo "=== Download open hardware fork ==="
-  git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
-  git fetch ohw_cvv
-
   echo "=== Make a core-v-verif/cv32e40s/dev branch ==="
   git checkout -b cvv_sdev_$date_time ohw_cvv/cv32e40s/dev
 
@@ -128,10 +120,6 @@ merge_sdev_into_xdev () {
 merge_xdev_into_sdev () {
 
   echo $'\n======= Merge of core-v-verif cv32e40x/dev into cv32e40s/dev =======\n'
-
-  echo "=== Download open hardware fork ==="
-  git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
-  git fetch ohw_cvv
 
   echo "=== Make a core-v-verif/cv32e40s/dev branch ==="
   git checkout -b cvv_xdev_$date_time ohw_cvv/cv32e40x/dev
@@ -191,13 +179,14 @@ need_40s_40x-dv_merge(){
 
   missing_commits=()
   nr_commits=10
-  nr_commits_to_check=100
+  nr_commits_to_check=10
 
   # Get commit shas from cv32e40s:
   cv32e40s_commits_shas=$(git log --pretty=format:'%H' -$nr_commits -- cv32e40s)
-
+  echo $cv32e40s_commits_shas
   for sha in $cv32e40s_commits_shas; do
     commit_message=$(git show -s --format=%s%b $sha)
+    echo $commit_message
 
     # If the commit is signed off search for the commit's -m message in cv32e40x-dv
     # to check if the commit is merged or not.
@@ -237,12 +226,18 @@ need_40s_40x-dv_merge(){
 
 }
 
+update_remote() {
+  git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
+  git fetch ohw_cvv
+  git remote add ohw_x-dv git@github.com:openhwgroup/cv32e40x-dv.git
+  git fetch ohw_x-dv
+}
 
 main() {
-
   case $1 in
     "--s_into_x-dv")
-      clone_x_dv
+      #clone_x_dv
+      update_remote
       need_40s_40x-dv_merge
       merge_cv32e40s_into_cv32e40x-dv
       move_files_40s_into_40x
@@ -250,14 +245,17 @@ main() {
       check_merge_status
       ;;
     "--sdev_into_xdev")
+      update_remote
       merge_sdev_into_xdev
       check_merge_status
       ;;
     "--xdev_into_sdev")
+      update_remote
       merge_xdev_into_sdev
       check_merge_status
       ;;
     "--rejection-diff")
+      update_remote
       rejection_diff
       ;;
     *)
