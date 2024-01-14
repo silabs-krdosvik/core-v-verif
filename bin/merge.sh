@@ -57,24 +57,18 @@ merge_cv32e40s_into_cv32e40x-dv () {
   cd cv32e40x
 
   echo "=== Make a branch in cv32e40x-dv that contain core-v-verif's cv32e40s folder from the cv32e40s/dev branch ==="
-  {
   git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
   git fetch ohw_cvv
   git checkout -b cvv_$date_time ohw_cvv/cv32e40s/dev
   git subtree split --prefix cv32e40s -b cv32e40s_$date_time
-  } 2> /dev/null 1> /dev/null
 
   echo "=== Make a branch based on the latest cv32e40x-dv content ==="
-  {
   git remote add ohw_x-dv git@github.com:openhwgroup/cv32e40x-dv.git
   git fetch ohw_x-dv
   git checkout -b merge_cv32e40s_$date_time ohw_x-dv/main
-  } 2> /dev/null 1> /dev/null
 
   echo "=== Merge ==="
-  {
   git merge -X find-renames --no-ff --no-commit cv32e40s_$date_time
-  } 2> /dev/null 1> /dev/null
 }
 
 
@@ -237,11 +231,9 @@ get_branch_cv32e40s_dev() {
 
   echo -e "\n== Enter updated cv32e40s/dev branch =="
 
-  {
   git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
   git fetch ohw_cvv
   git checkout ohw_cvv/cv32e40s/dev
-  } 2> /dev/null
 
 }
 
@@ -263,8 +255,8 @@ continue_or_exit() {
 main() {
   case $1 in
     "--s_into_x-dv")
-      #clone_x_dv
-      #get_branch_cv32e40s_dev
+      clone_x_dv
+      get_branch_cv32e40s_dev
       continue_or_exit
       need_40s_40x-dv_merge
       continue_or_exit
