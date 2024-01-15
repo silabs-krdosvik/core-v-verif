@@ -74,8 +74,7 @@ merge_cv32e40s_into_cv32e40x-dv () {
 
 move_files_40s_into_40x () {
 
-  echo "======= Replace 40s/S with 40x/X in file names? ======="
-  echo "This is recommended"
+  echo "======= Replace 40s/S with 40x/X in file names? (recommended) ======="
   read -p "(default: y, n)?" yn
 
   case $yn in
@@ -98,8 +97,7 @@ move_files_40s_into_40x () {
 
 substitute_file_content_40s_into_40x () {
 
-  echo "======= Exchange 40x/X with 40s/S in file content? ======="
-  echo "This is not recommended"
+  echo "======= Exchange 40x/X with 40s/S in file content? (not recommended) ======="
   read -p "(y, default: n)?" yn
   case $yn in
     [Yy])
@@ -123,6 +121,10 @@ merge_sdev_into_xdev () {
 
   echo $'\n======= Merge of core-v-verif cv32e40s/dev into cv32e40x/dev =======\n'
 
+  echo "=== Download open hardware fork ==="
+  git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
+  git fetch ohw_cvv
+
   echo "=== Make a core-v-verif/cv32e40s/dev branch ==="
   git checkout -b cvv_sdev_$date_time ohw_cvv/cv32e40s/dev
 
@@ -141,6 +143,10 @@ merge_sdev_into_xdev () {
 merge_xdev_into_sdev () {
 
   echo $'\n======= Merge of core-v-verif cv32e40x/dev into cv32e40s/dev =======\n'
+
+  echo "=== Download open hardware fork ==="
+  git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
+  git fetch ohw_cvv
 
   echo "=== Make a core-v-verif/cv32e40s/dev branch ==="
   git checkout -b cvv_xdev_$date_time ohw_cvv/cv32e40x/dev
@@ -279,17 +285,14 @@ main() {
       check_merge_status
       ;;
     "--sdev_into_xdev")
-      update_remote
       merge_sdev_into_xdev
       check_merge_status
       ;;
     "--xdev_into_sdev")
-      update_remote
       merge_xdev_into_sdev
       check_merge_status
       ;;
     "--rejection-diff")
-      update_remote
       rejection_diff
       ;;
     *)
