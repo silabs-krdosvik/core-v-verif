@@ -130,7 +130,7 @@ merge_sdev_into_xdev () {
 
 
   echo "=== Make a core-v-verif/cv32e40x/dev branch ==="
-  git checkout -b cvv_xdev_$date_time ohw_cvv/cv32e40x/dev
+  git checkout -b merge_sdev_into_xdev_$date_time ohw_cvv/cv32e40x/dev
 
 
   echo "=== Merge ==="
@@ -153,7 +153,7 @@ merge_xdev_into_sdev () {
 
 
   echo "=== Make a core-v-verif/cv32e40s/dev branch ==="
-  git checkout -b cvv_sdev_$date_time ohw_cvv/cv32e40s/dev
+  git checkout -b merge_xdev_into_sdev_$date_time ohw_cvv/cv32e40s/dev
 
 
   echo "=== Merge ==="
