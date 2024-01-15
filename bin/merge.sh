@@ -28,10 +28,12 @@ if [[ $CMD_OUTPUT == "--no-cmd-output" ]]; then
 else
   OUTPUT_DEV="/dev/tty"
 fi
+echo $OUTPUT_DEV
 
 {
+  echo hi
+  git status
 } 2>&1 > $OUTPUT_DEV
-
 
 #Variables:
 date_time=$(date +%Y.%m.%d-%H.%M)
@@ -44,7 +46,7 @@ usage() {
   echo "--sdev_into_xdev  Do a merge of core-v-verif cv32e40s/dev into core-v-verif cv32e40x/dev"
   echo "--xdev_into_sdev  Do a merge of core-v-verif cv32e40x/dev into core-v-verif cv32e40s/dev"
   echo "--rejection-diff  Merge s/dev to x-dv, using 'theirs'"
-  echo "--no-cmd-output   Do not print cmd output. This option makes the script more userfriendly, but if the output is not as expected it can hide important error messages."
+  echo "--no-cmd-output   Do not print cmd output. If the output is not as expected it can hide important error messages."
 
   exit 1
 
@@ -273,10 +275,11 @@ need_40s_40x-dv_merge(){
 get_branch_cv32e40s_dev() {
 
   echo -e "\n== Enter an updated cv32e40s/dev branch =="
-
-  git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
-  git fetch ohw_cvv
-  git checkout ohw_cvv/cv32e40s/dev
+  {
+    git remote add ohw_cvv git@github.com:openhwgroup/core-v-verif.git
+    git fetch ohw_cvv
+    git checkout ohw_cvv/cv32e40s/dev
+  } 2>&1 > $OUTPUT_DEV
 
 }
 
