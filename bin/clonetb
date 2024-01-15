@@ -35,16 +35,7 @@
 #   CV_CORE          - Name of the core to use.
 #   VERIF_ENV_REPO   - URL to external verif env repo.
 #   VERIF_ENV_REF - Branch/hash/tag of external verif env repo.
-CMD_OUTPUT=$2
 
-if [[ $CMD_OUTPUT == "--no-cmd-output" ]]; then
-  # 'tty' represents 'current console'
-  # changing 'tty' to 'null' disables output
-  OUTPUT_DEV="/dev/null"
-else
-  OUTPUT_DEV="/dev/tty"
-fi
-echo $OUTPUT_DEV
 
 usage() {
   echo "usage: $0 [-x] [--clone] [--ignore] [--unignore]"
@@ -80,11 +71,9 @@ check_env_vars() {
 
 clone() {
   check_env_vars
-  {
-    rm -rf ${CV_CORE}
-    git clone  ${VERIF_ENV_REPO}  ${CV_CORE}
-    cd ${CV_CORE} && git checkout ${VERIF_ENV_REF} && cd -
-  } 2>&1 > $OUTPUT_DEV
+  rm -rf ${CV_CORE}
+  git clone  ${VERIF_ENV_REPO}  ${CV_CORE}
+  cd ${CV_CORE} && git checkout ${VERIF_ENV_REF} && cd -
 }
 
 clone_cv32e40x() {
